@@ -1,0 +1,8 @@
+# Keep personal branch assets/config when merging main into my-album.
+README.md merge=ours
+pay_wx.jpg merge=ours
+pay_zfb.png merge=ours
+background.jpg merge=ours
+albums.json merge=ours
+CNAME merge=ours
+album/** merge=ours
