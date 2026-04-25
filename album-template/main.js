@@ -17,11 +17,70 @@
     const lbTitle = document.getElementById('lbTitle');
     const lbDesc = document.getElementById('lbDesc');
     const viewerShell = document.querySelector('.viewer');
+    let alignRaf = 0;
+    let revealTimer = 0;
+    let revealPending = false;
+    let resizeObserver = null;
 
     function revealViewer() {
         if (!viewerShell) return;
         viewerShell.classList.remove('is-preparing');
         viewerShell.classList.add('is-ready');
+    }
+
+    function requestAlign() {
+        if (alignRaf) cancelAnimationFrame(alignRaf);
+        alignRaf = requestAnimationFrame(() => show(current, false));
+    }
+
+    function waitForCurrentImageThenReveal() {
+        if (revealPending) return;
+        revealPending = true;
+
+        const slides = Array.from(track.querySelectorAll('.slide'));
+        const currentSlide = slides[current];
+        const currentImg = currentSlide ? currentSlide.querySelector('img') : null;
+
+        const done = () => {
+            if (!revealPending) return;
+            revealPending = false;
+            requestAnimationFrame(() => {
+                show(current, false);
+                revealViewer();
+            });
+        };
+
+        if (!currentImg) {
+            done();
+            return;
+        }
+
+        if (currentImg.complete && currentImg.naturalWidth > 0) {
+            done();
+            return;
+        }
+
+        const onReady = () => {
+            currentImg.removeEventListener('load', onReady);
+            currentImg.removeEventListener('error', onReady);
+            done();
+        };
+
+        currentImg.addEventListener('load', onReady, { once: true });
+        currentImg.addEventListener('error', onReady, { once: true });
+        clearTimeout(revealTimer);
+        revealTimer = setTimeout(done, 1500);
+    }
+
+    function setupResizeObserver() {
+        if (typeof ResizeObserver === 'undefined') return;
+        if (resizeObserver) resizeObserver.disconnect();
+        const wrap = trackWrap || track.parentElement;
+        if (!wrap) return;
+        resizeObserver = new ResizeObserver(() => {
+            requestAlign();
+        });
+        resizeObserver.observe(wrap);
     }
 
     function render() {
@@ -35,10 +94,13 @@
             const img = document.createElement('img');
             img.src = it.src || '';
             img.alt = it.title || '';
+            img.addEventListener('load', requestAlign);
+            img.addEventListener('error', requestAlign);
 
             slide.appendChild(img);
             track.appendChild(slide);
         });
+        setupResizeObserver();
         // wait until layout is measurable, then center with a few follow-up passes
         scheduleInitialLayoutSync();
     }
@@ -61,7 +123,7 @@
                     show(current, false);
                     requestAnimationFrame(() => {
                         show(current, false);
-                        revealViewer();
+                        waitForCurrentImageThenReveal();
                     });
                 }, 320);
                 return;
@@ -73,7 +135,7 @@
             } else {
                 // fail-safe: reveal UI even on extreme slow layout cases
                 show(current, false);
-                revealViewer();
+                waitForCurrentImageThenReveal();
             }
         };
 
