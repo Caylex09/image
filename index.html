@@ -5,6 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico">
+    <script>
+        (function () {
+            const params = new URLSearchParams(location.search);
+            if (params.get('album') || params.get('a')) {
+                document.documentElement.classList.add('album-mode');
+            }
+        })();
+    </script>
     <title>你要 v 我 50 吗</title>
     <link rel="stylesheet" href="./styles.css">
 </head>
@@ -81,6 +89,16 @@
 
     </main>
 
+    <footer class="site-footer" id="siteFooter">
+        <p>
+            © 2026 <a class="footer-link" href="https://github.com/Caylex09" target="_blank"
+                rel="noopener noreferrer">Caylex</a> ·
+            Built with ❤️ ·
+            <a class="footer-link" href="https://github.com/Caylex09/image" target="_blank"
+                rel="noopener noreferrer">GitHub</a>
+        </p>
+    </footer>
+
     <script src="./main.js"></script>
     <script>
         (function () {
@@ -99,7 +117,11 @@
 
             // show album viewer
             const viewer = document.getElementById('albumViewer');
-            if (viewer) viewer.style.display = 'block';
+            if (viewer) {
+                viewer.style.display = 'block';
+                const viewerInner = viewer.querySelector('.viewer');
+                if (viewerInner) viewerInner.classList.add('is-preparing');
+            }
 
             function normalizeAlbumKey(value) {
                 if (!value) return '';

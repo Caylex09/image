@@ -19,6 +19,7 @@ body {
     font-family: "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif;
     color: var(--ink);
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -53,6 +54,60 @@ body {
 main {
     width: min(1100px, 92vw);
     margin: 0 auto;
+}
+
+/* Apply album-mode layout immediately to avoid first-frame size jump before album CSS loads */
+body.album-mode {
+    overflow: hidden;
+}
+
+html.album-mode body {
+    overflow: hidden;
+}
+
+body.album-mode main {
+    width: 100vw;
+    max-width: none;
+    margin: 0;
+}
+
+html.album-mode body main {
+    width: 100vw;
+    max-width: none;
+    margin: 0;
+}
+
+body.album-mode .album-viewer {
+    min-height: 100vh;
+}
+
+html.album-mode #hero,
+html.album-mode #folders {
+    display: none !important;
+}
+
+html.album-mode #albumViewer {
+    display: block !important;
+    min-height: 100vh;
+}
+
+/* Prevent first-paint flash of lightbox internals before album-template CSS is loaded */
+html.album-mode #albumViewer .lightbox {
+    display: none !important;
+}
+
+html.album-mode #albumViewer .lightbox.show {
+    display: flex !important;
+}
+
+html.album-mode #albumViewer .viewer {
+    opacity: 0;
+    visibility: hidden;
+}
+
+html.album-mode #albumViewer .viewer.is-ready {
+    opacity: 1;
+    visibility: visible;
 }
 
 /* 下滑浮现效果：当用户向下滚动到文件夹时，文件夹区域整体向上浮现，卡片逐个延迟上浮 */
@@ -230,6 +285,51 @@ h1 {
     margin-top: 0.8rem;
     font-size: 0.8rem;
     color: var(--accent);
+}
+
+.site-footer {
+    position: fixed;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    z-index: 25;
+    width: auto;
+    max-width: min(92vw, 780px);
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: rgba(8, 14, 20, 0.36);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--ink-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.28rem;
+    text-align: center;
+    backdrop-filter: blur(6px);
+}
+
+.site-footer p {
+    margin: 0;
+    font-size: 0.86rem;
+}
+
+.footer-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid transparent;
+}
+
+.footer-link:hover {
+    border-bottom-color: rgba(255, 204, 99, 0.82);
+}
+
+@media (max-width: 800px) {
+    .site-footer {
+        max-width: min(92vw, 680px);
+    }
 }
 
 .reveal {

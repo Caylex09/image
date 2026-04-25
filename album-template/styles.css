@@ -207,6 +207,17 @@ body.album-mode .album-viewer {
     min-height: 100vh;
 }
 
+.viewer.is-preparing {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.viewer.is-ready {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 180ms ease;
+}
+
 .back-home {
     position: absolute;
     left: 18px;

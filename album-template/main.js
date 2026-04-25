@@ -16,6 +16,13 @@
     const lbImage = document.getElementById('lbImage');
     const lbTitle = document.getElementById('lbTitle');
     const lbDesc = document.getElementById('lbDesc');
+    const viewerShell = document.querySelector('.viewer');
+
+    function revealViewer() {
+        if (!viewerShell) return;
+        viewerShell.classList.remove('is-preparing');
+        viewerShell.classList.add('is-ready');
+    }
 
     function render() {
         track.innerHTML = '';
@@ -50,12 +57,24 @@
                 show(current, false);
                 requestAnimationFrame(() => show(current, false));
                 setTimeout(() => show(current, false), 120);
-                setTimeout(() => show(current, false), 320);
+                setTimeout(() => {
+                    show(current, false);
+                    requestAnimationFrame(() => {
+                        show(current, false);
+                        revealViewer();
+                    });
+                }, 320);
                 return;
             }
 
             tries += 1;
-            if (tries < maxTries) requestAnimationFrame(sync);
+            if (tries < maxTries) {
+                requestAnimationFrame(sync);
+            } else {
+                // fail-safe: reveal UI even on extreme slow layout cases
+                show(current, false);
+                revealViewer();
+            }
         };
 
         requestAnimationFrame(sync);
