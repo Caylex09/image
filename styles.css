@@ -1,0 +1,264 @@
+:root {
+    --ink: #f8f4ea;
+    --ink-dim: rgba(248, 244, 234, 0.78);
+    --card: rgba(19, 28, 36, 0.68);
+    --card-border: rgba(255, 255, 255, 0.24);
+    --accent: #ffcc63;
+    --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", serif;
+    color: var(--ink);
+    scroll-behavior: smooth;
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+    background: radial-gradient(circle at 20% 10%, #3f6f8f 0%, #203848 45%, #0f161d 100%);
+}
+
+.bg-layer,
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+}
+
+.bg-layer {
+    background-image: url('./background.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: saturate(1.1);
+    transform: scale(1.05);
+}
+
+.overlay {
+    z-index: -1;
+    background:
+        radial-gradient(circle at 12% 20%, rgba(255, 192, 120, 0.20) 0%, transparent 34%),
+        radial-gradient(circle at 85% 80%, rgba(96, 182, 211, 0.24) 0%, transparent 42%),
+        linear-gradient(160deg, rgba(14, 20, 29, 0.76) 0%, rgba(14, 20, 29, 0.58) 40%, rgba(14, 20, 29, 0.78) 100%);
+}
+
+main {
+    width: min(1100px, 92vw);
+    margin: 0 auto;
+}
+
+/* 下滑浮现效果：当用户向下滚动到文件夹时，文件夹区域整体向上浮现，卡片逐个延迟上浮 */
+.hero {
+    position: relative;
+}
+
+.folders {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: transform 560ms cubic-bezier(.2, .9, .3, 1), opacity 560ms;
+    will-change: transform, opacity;
+}
+
+.folders.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.folder-grid .folder-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: transform 480ms cubic-bezier(.2, .9, .3, 1), opacity 480ms;
+}
+
+.folders.visible .folder-grid .folder-card {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 5rem 0 2rem;
+}
+
+.hero-content {
+    width: 100%;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4.5vw, 3.6rem);
+    letter-spacing: 0.06em;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+.subtitle {
+    margin: 0.8rem 0 2rem;
+    font-size: 1rem;
+    color: var(--ink-dim);
+}
+
+.pay-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(15, 24, 35, 0.68);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 0.62rem 1.15rem;
+    font-size: 0.96rem;
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.pay-toggle:hover {
+    transform: translateY(-2px);
+    background: rgba(15, 24, 35, 0.84);
+    border-color: rgba(255, 221, 158, 0.82);
+}
+
+.pay-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.1rem;
+    max-height: 1200px;
+    opacity: 1;
+    transform: translateY(0);
+    overflow: hidden;
+    transition: max-height 380ms ease, opacity 280ms ease, transform 320ms ease, margin-top 280ms ease;
+}
+
+.pay-grid.is-collapsed {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.pay-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+}
+
+.pay-card h2 {
+    margin: 0 0 0.9rem;
+    font-size: 1.05rem;
+    color: #fff0d0;
+}
+
+.pay-card img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.scroll-tip {
+    margin-top: 1.6rem;
+    display: inline-block;
+    text-decoration: none;
+    color: #ffe3b0;
+    font-size: 0.95rem;
+    border-bottom: 1px dashed rgba(255, 227, 176, 0.72);
+    padding-bottom: 0.2rem;
+}
+
+.folders {
+    min-height: 100vh;
+    padding: 5.5rem 0 4rem;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+}
+
+.section-header p {
+    margin: 0.7rem 0 2rem;
+    color: var(--ink-dim);
+}
+
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.folder-card {
+    text-decoration: none;
+    color: var(--ink);
+    background: rgba(8, 14, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.folder-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 221, 158, 0.82);
+    background: rgba(13, 21, 29, 0.8);
+}
+
+.folder-title {
+    font-size: 1.08rem;
+    margin: 0;
+}
+
+.folder-desc {
+    margin: 0.45rem 0 0;
+    color: var(--ink-dim);
+    line-height: 1.45;
+    font-size: 0.92rem;
+}
+
+.folder-tag {
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: revealUp 650ms ease forwards;
+}
+
+.reveal:nth-child(2) {
+    animation-delay: 180ms;
+}
+
+@keyframes revealUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 800px) {
+    .hero {
+        padding-top: 3.4rem;
+    }
+
+    .pay-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pay-card img {
+        max-height: 360px;
+    }
+}
